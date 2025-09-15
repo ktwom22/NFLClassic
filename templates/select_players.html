@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Players</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Select Locked / Excluded Players</h1>
+        <form method="post" action="/generate">
+            <label for="count">Number of Lineups:</label>
+            <input type="number" name="count" value="5" min="1" max="50">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lock</th>
+                        <th>Exclude</th>
+                        <th>Player</th>
+                        <th>Pos</th>
+                        <th>Team</th>
+                        <th>Salary</th>
+                        <th>Proj Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for player in players %}
+                    <tr>
+                        <td><input type="checkbox" name="locked" value="{{ player.PLAYER }}"></td>
+                        <td><input type="checkbox" name="excluded" value="{{ player.PLAYER }}"></td>
+                        <td>{{ player.PLAYER }}</td>
+                        <td>{{ player.POS }}</td>
+                        <td>{{ player.TEAM }}</td>
+                        <td>${{ "{:,.0f}".format(player.SALARY) }}</td>
+                        <td>{{ "{:.2f}".format(player.PROJECTED POINTS) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit">Generate Lineups</button>
+        </form>
+    </div>
+</body>
+</html>

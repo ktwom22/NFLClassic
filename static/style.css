@@ -1,0 +1,129 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #1a1a1a;
+}
+
+.lineup-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    flex: 1 1 200px;
+    margin-right: 20px;
+}
+
+.form-row label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-row input,
+.form-row select {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.submit-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    align-self: flex-end;
+    margin-top: 10px;
+    transition: background 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+.error-msg {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.lineups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.lineup-card {
+    background-color: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.lineup-card:hover {
+    transform: translateY(-5px);
+}
+
+.lineup-card h3 {
+    margin-top: 0;
+    font-size: 16px;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+}
+
+.lineup-card ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.lineup-card li {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.lineup-card .position {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.lineup-card .name {
+    font-weight: bold;
+}
+
+.lineup-card .team {
+    color: #555;
+}
+
+.lineup-card .salary,
+.lineup-card .points {
+    color: #1a1a1a;
+    font-weight: bold;
+}

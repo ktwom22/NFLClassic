@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NFL Lineups</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Generated Lineups</h1>
+        <a href="/">← Back to player selection</a>
+        <div class="lineups-grid">
+            {% for lineup in lineups %}
+            <div class="lineup-card">
+                <h3>Salary: ${{ "{:,.0f}".format(lineup.salary) }} | Points: {{ "{:.2f}".format(lineup.points) }}</h3>
+                <ul>
+                    {% for player in lineup.players %}
+                    <li>{{ player.Position }} - {{ player.Name }} ({{ player.Team }}) - ${{ "{:,.0f}".format(player.Salary) }} pts: {{ "{:.2f}".format(player.Points) }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

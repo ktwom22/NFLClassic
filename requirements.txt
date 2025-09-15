@@ -1,0 +1,4 @@
+Flask
+pandas
+pulp
+gunicorn
