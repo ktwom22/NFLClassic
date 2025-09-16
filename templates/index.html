@@ -1,56 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>DFS Lineup Generator</title>
-    <style>
-        .card { border: 1px solid #ccc; padding: 15px; margin: 10px; border-radius: 8px; box-shadow: 2px 2px 5px #aaa; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f2f2f2; }
-    </style>
+    <title>NFL Lineup Generator</title>
 </head>
 <body>
-    <h1>DFS Lineup Generator</h1>
+<h1>Generate NFL DraftKings Lineups</h1>
+<form method="POST">
+    Number of lineups: <input type="number" name="num_lineups" value="{{ num_lineups }}" min="1" max="10">
+    <button type="submit">Generate</button>
+</form>
 
-    <form method="POST">
-        <label>Number of Lineups: <input type="number" name="num_lineups" value="{{ num_lineups }}" min="1" max="10"></label>
-        <table>
-            <tr>
-                <th>Lock</th>
-                <th>Exclude</th>
-                <th>Player</th>
-                <th>POS</th>
-                <th>Team</th>
-                <th>Salary</th>
-                <th>Points</th>
-            </tr>
-            {% for p in players %}
-            <tr>
-                <td><input type="checkbox" name="lock" value="{{ p.PLAYER }}" {% if p.PLAYER in locks %}checked{% endif %}></td>
-                <td><input type="checkbox" name="exclude" value="{{ p.PLAYER }}" {% if p.PLAYER in excludes %}checked{% endif %}></td>
-                <td>{{ p.PLAYER }}</td>
-                <td>{{ p.POS }}</td>
-                <td>{{ p.TEAM }}</td>
-                <td>${{ "%.0f"|format(p.SALARY) }}</td>
-                <td>{{ "%.2f"|format(p.PROJECTED_POINTS) }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        <button type="submit">Generate Lineups</button>
-    </form>
-
-    <h2>Generated Lineups</h2>
+{% if lineups %}
+    <h2>Generated Lineups:</h2>
     {% for lineup in lineups %}
-    <div class="card">
-        {% set total_salary = 0 %}
-        {% set total_points = 0 %}
+        <ul>
         {% for p in lineup %}
-            <p>{{ p.POS }} - {{ p.PLAYER }} ({{ p.TEAM }}) | ${{ "%.0f"|format(p.SALARY) }} | {{ "%.2f"|format(p.PROJECTED_POINTS) }} pts</p>
-            {% set total_salary = total_salary + p.SALARY %}
-            {% set total_points = total_points + p.PROJECTED_POINTS %}
+            <li>{{ p.POS }} - {{ p.PLAYER }} ({{ p.TEAM }}) | ${{ "%.0f"|format(p.SALARY) }} | {{ "%.2f"|format(p.PROJECTED_POINTS) }} pts</li>
         {% endfor %}
-        <strong>Total Salary: ${{ "%.0f"|format(total_salary) }} | Total Points: {{ "%.2f"|format(total_points) }}</strong>
-    </div>
+        </ul>
+        <hr>
     {% endfor %}
+{% endif %}
 </body>
 </html>
