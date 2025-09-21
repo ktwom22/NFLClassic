@@ -16,7 +16,7 @@ CSV_URLS = {
 
 SALARY_CAP = 50000
 
-# ------------------ HTML Templates ------------------
+# ------------------ HTML TEMPLATES ------------------
 PLAYER_HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">
@@ -50,11 +50,8 @@ input[type=number] { width: 60px; }
 
 <form method="get" action="/lineups">
 <input type="hidden" name="slate" value="{{ slate_choice }}">
-
 <label>Number of Lineups:</label>
 <input type="number" name="count" value="1" min="1" max="50">
-&nbsp;&nbsp; <label>Default Exposure % (all players):</label>
-<input type="number" name="default_exposure" value="100" min="0" max="100">
 <br><br>
 
 <table id="playerTable" class="display">
@@ -67,7 +64,6 @@ input[type=number] { width: 60px; }
 <th>Proj</th>
 <th>Lock</th>
 <th>Exclude</th>
-<th>Exposure %</th>
 </tr>
 </thead>
 <tbody>
@@ -80,7 +76,6 @@ input[type=number] { width: 60px; }
 <td>{{ "%.2f"|format(p.Proj) }}</td>
 <td><input type="checkbox" name="lock_flex" value="{{ p.Name }}"></td>
 <td><input type="checkbox" name="exclude" value="{{ p.Name }}"></td>
-<td><input type="number" name="exposure_{{ p.Name }}" value="" min="0" max="100"></td>
 </tr>
 {% endfor %}
 </tbody>
@@ -146,8 +141,8 @@ button:hover { background-color: #2980b9; }
 {% endfor %}
 
 <form action="/" method="get">
-    <input type="hidden" name="slate" value="{{ slate_choice }}">
-    <button type="submit">⬅ Back to Player Pool</button>
+<input type="hidden" name="slate" value="{{ slate_choice }}">
+<button type="submit">⬅ Back to Player Pool</button>
 </form>
 </body>
 </html>
@@ -172,19 +167,11 @@ def clean_data(df):
     return df[["Name", "Team", "POS", "Salary", "Proj"]]
 
 # ------------------ Generate Classic NFL Lineups ------------------
-def generate_classic_lineups(df, lock_players, exclude, exposures, default_exposure, num_lineups=5):
-    df = df.copy()
+def generate_classic_lineups(df, lock_players, exclude, num_lineups=5):
     if exclude:
         df = df[~df["Name"].isin(exclude)]
 
-    max_uses = {}
-    for name in df["Name"]:
-        pct = exposures.get(name, default_exposure)
-        max_uses[name] = max(1, int((pct / 100) * num_lineups))
-
     lineups = []
-    used_count = {name: 0 for name in df["Name"]}
-
     qb_pool = df[df["POS"] == "QB"]
     rb_pool = df[df["POS"] == "RB"]
     wr_pool = df[df["POS"] == "WR"]
@@ -202,10 +189,6 @@ def generate_classic_lineups(df, lock_players, exclude, exposures, default_expos
                             lineup_players = [qb, *rbs, *wrs, te, dst, flex]
                             total_salary = sum(p.Salary for p in lineup_players)
                             if total_salary <= SALARY_CAP:
-                                names = [p.Name for p in lineup_players]
-                                # Check exposures
-                                if any(used_count[n] >= max_uses[n] for n in names):
-                                    continue
                                 total_proj = sum(p.Proj for p in lineup_players)
                                 lineup_dict = {
                                     "players": [
@@ -215,8 +198,6 @@ def generate_classic_lineups(df, lock_players, exclude, exposures, default_expos
                                     "Projected": total_proj
                                 }
                                 lineups.append(lineup_dict)
-                                for n in names:
-                                    used_count[n] += 1
                             if len(lineups) >= num_lineups: break
                         if len(lineups) >= num_lineups: break
                     if len(lineups) >= num_lineups: break
@@ -247,15 +228,8 @@ def lineups():
         lock_players = request.args.getlist("lock_flex")
         exclude = request.args.getlist("exclude")
         count = max(1, min(int(request.args.get("count", 1)), 50))
-        default_exposure = int(request.args.get("default_exposure", 100))
 
-        exposures = {}
-        for name in df["Name"]:
-            val = request.args.get(f"exposure_{name}", "")
-            if val.isdigit():
-                exposures[name] = int(val)
-
-        lineups = generate_classic_lineups(df, lock_players, exclude, exposures, default_exposure, num_lineups=count)
+        lineups = generate_classic_lineups(df, lock_players, exclude, num_lineups=count)
         if not lineups:
             return render_template_string(LINEUP_HTML_TEMPLATE, lineups=[], error="No valid lineups.", slate_choice=slate_choice)
 
